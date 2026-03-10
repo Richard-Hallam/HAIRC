@@ -4,9 +4,8 @@ from machine import Pin
 from ir_rx.acquire import IR_GET
 from ir_tx import Player
 
-# ───────────────────────────────────────────────
+
 # Setup
-# ───────────────────────────────────────────────
 RX_PIN = 16
 TX_PIN = 17
 CODES_FILE = 'ir_codes.json'
@@ -20,9 +19,8 @@ try:
 except OSError:
     print("No saved codes found. Starting fresh.")
 
-# ───────────────────────────────────────────────
+
 # Functions
-# ───────────────────────────────────────────────
 def save_codes():
     try:
         with open(CODES_FILE, 'w') as f:
@@ -89,9 +87,8 @@ def capture_mode():
         else:
             print(f"Capture too short ({edge_count} edges). Try closer or hold longer.")
 
-# ───────────────────────────────────────────────
+
 # Main menu
-# ───────────────────────────────────────────────
 def menu():
     while True:
         print("\nIR Remote Tool")
@@ -123,5 +120,5 @@ def menu():
         else:
             print("Invalid choice (0–3).")
 
-# Run the program
+
 menu()
