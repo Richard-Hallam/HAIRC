@@ -1,8 +1,22 @@
 import json
 import time
+import network
+import socket
+import secrets
 from machine import Pin
 from ir_rx.acquire import IR_GET
 from ir_tx import Player
+
+
+def connect():
+    #wifi setup
+    wlan = network.WLAN(network.STA_IF)
+    wlan.active(True)
+    wlan.connect(secrets.SSID, secrets.PASSWORD)
+    while wlan.isconnected() == False:
+        print("connecting")
+        time.sleep(1)
+    print(wlan.ifconfig())
 
 
 # Setup
@@ -51,7 +65,7 @@ def playback(cmd):
         tx_pin = Pin(TX_PIN, Pin.OUT, value=0)
         player = Player(tx_pin)
         player.play(ir_codes[cmd])
-        time.sleep(0.3)  # small pause to avoid overlapping output
+        time.sleep(0.3)  
         print(f"Playback of '{cmd}' finished.")
     except Exception as e:
         print(f"Playback error: {e}")
@@ -110,15 +124,17 @@ def menu():
         elif choice == 2:
             list_codes()
         elif choice == 3:
-            list_codes()  # show options first
+            list_codes() 
             cmd = input("Enter command name to play: ").strip()
             playback(cmd)
         elif choice == 0:
-            save_codes()  # just in case
+            save_codes()  
             print("\nGoodbye. All changes saved.")
             break
         else:
             print("Invalid choice (0–3).")
 
 
-menu()
+#menu()
+
+connect()
