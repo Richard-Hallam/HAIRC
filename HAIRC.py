@@ -10,14 +10,51 @@ from ir_tx import Player
 
 def connect():
     #wifi setup
+    counter=0
     wlan = network.WLAN(network.STA_IF)
     wlan.active(True)
     wlan.connect(secrets.SSID, secrets.PASSWORD)
     while wlan.isconnected() == False:
-        print("connecting")
+        print(f"connecting {counter} seconds")
+        counter+=1
         time.sleep(1)
-    print(wlan.ifconfig())
+    ip = wlan.ifconfig()[0]
+    print(f"ip: {ip}")
+    return ip
 
+
+def open_socket(ip):
+    address = (ip, 80)
+    connection = socket.socket()
+    connection.bind(address)
+    connection.listen(1)
+    print(connection)
+    return connection
+
+
+def serve(connection):
+    while True:
+        client = connection.accept()[0]
+        request = client.recv(1024)
+        request = str(request)
+        print(request)
+        html = webpage()
+        client.send(html)
+        client.close()
+
+
+def webpage():
+    html = """
+            <!DOCTYPE html>
+    <html>
+        <body>
+            <p>
+            test
+            </p>
+        </body>
+    </html>
+    """
+    return str(html)
 
 # Setup
 RX_PIN = 16
@@ -134,7 +171,8 @@ def menu():
         else:
             print("Invalid choice (0–3).")
 
-
 #menu()
 
-connect()
+ip = connect()
+connection = open_socket(ip)
+serve(connection)
